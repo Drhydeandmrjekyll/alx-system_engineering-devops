@@ -2,7 +2,7 @@
 exec { 'killmenow':
   command  => '/usr/bin/pkill killmenow',
   provider => 'shell',
-  refreshonly => true,
+  onlyif   => 'pgrep killmenow',
   returns  => [0, 1],
 }
 
