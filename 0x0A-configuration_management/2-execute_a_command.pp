@@ -1,4 +1,4 @@
-exec { 'kill_killmenow_process':
+exec { 'killmenow':
   command     => '/usr/bin/pkill killmenow',
   onlyif      => 'pgrep killmenow',
   provider    => 'shell',
