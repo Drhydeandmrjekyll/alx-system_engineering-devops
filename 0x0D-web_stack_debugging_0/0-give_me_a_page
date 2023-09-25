@@ -1,0 +1,11 @@
+# Use official Apache image as base image
+FROM httpd:2.4
+
+# Copy index.html file with "Hello Holberton" content to Apache document root
+COPY index.html /usr/local/apache2/htdocs/
+
+# Expose port 80 allowing external access
+EXPOSE 80
+
+# Start Apache in foreground
+CMD ["httpd-foreground"]
