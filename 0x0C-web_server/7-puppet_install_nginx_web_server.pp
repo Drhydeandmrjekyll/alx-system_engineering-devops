@@ -12,7 +12,7 @@ class nginx_server {
     ensure => 'running',
     enable => true,
   }
-
+  
   # Configure Nginx to listen on port 80
   file { '/etc/nginx/sites-available/default':
     ensure  => 'file',
