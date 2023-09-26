@@ -1,0 +1,24 @@
+#!/usr/in/env bash
+
+# Update package list to ensure we have the latest information about available packages
+apt-get update
+
+# Install Nginx
+apt-get install -y nginx
+
+# Create simple HTML file with "Hello World!" content
+echo "Hello World!" > /var/www/html/index.html
+
+# Check if Nginx is already running and, if so, stop it
+if pgrep -x "nginx" > /dev/null; then
+    killall nginx
+fi
+
+# Start Nginx (without using systemctl)
+/usr/sbin/nginx
+
+# Listen on port 80
+sed -i 's/80 default_server/80 default_server;/g' /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
+/usr/sbin/nginx -s reload
