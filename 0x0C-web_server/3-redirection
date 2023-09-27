@@ -17,7 +17,11 @@
 # Check for and create backups of existing Nginx configuration files
 #backup_file "/etc/nginx/nginx.conf"
 #backup_file "/etc/nginx/sites-available/default"
+# Update package lists to get the latest package information
+sudo apt-get -y update
 
+# Install Nginx with the '-y' option to automatically answer 'yes' to prompts
+sudo apt-get -y install nginx
 # Update package lists for available software packages.
 sudo apt-get update
 
