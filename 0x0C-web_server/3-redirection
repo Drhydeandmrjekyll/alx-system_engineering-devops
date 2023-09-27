@@ -23,7 +23,7 @@ sudo apt-get -y update
 # Install Nginx with the '-y' option to automatically answer 'yes' to prompts
 sudo apt-get -y install nginx
 # Update package lists for available software packages.
-sudo apt-get update
+#sudo apt-get update
 
 # Configure firewall rules (allow HTTP traffic)
 sudo ufw allow 'Nginx HTTP'
