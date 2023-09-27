@@ -1,48 +1,56 @@
 #!/usr/bin/env bash
-# Installs Nginx with following configurations:
-#+    Listens port 80.
-#+    Returns page containing "Hello World!" when queried
-#++    at root with curl GET request.
+# Production-ready Nginx setup script with backup function
 
-#  updates package lists for available software packages.
-apt-get update
-# installs Nginx web server.
-apt-get install -y nginx
+# Function to create a backup of a file
+backup_file() {
+    local file="$1"
+    local backup_suffix=".backup-$(date +%Y%m%d%H%M%S)"
 
-# Creates /etc/nginx/html directory, which will serve as document root directory for Nginx.
-mkdir /etc/nginx/html
-#  creates empty index.html file inside /etc/nginx/html directory.
-touch /etc/nginx/html/index.html
-#  sets content of the index.html file to "Hello World!" using echo command.
-echo "Hello World!" > /etc/nginx/html/index.html
-# Sets Nginx to listen on port 80 and serve files from /etc/nginx/html directory.
-printf %s "server {
-     listen      80;
-     listen      [::]:80 default_server;
-     root        /etc/nginx/html;
-     index       index.html index.htm;
+    if [ -e "$file" ]; then
+        sudo cp "$file" "$file$backup_suffix"
+        echo "Backup created for $file as $file$backup_suffix"
+    else
+        echo "File $file not found, skipping backup"
+    fi
 }
-" > /etc/nginx/sites-available/default
 
-# Configure new server block for redirection
-echo "server {
+# Check for and create backups of existing Nginx configuration files
+backup_file "/etc/nginx/nginx.conf"
+backup_file "/etc/nginx/sites-available/default"
+
+# Update package lists for available software packages.
+sudo apt-get update
+
+# Configure firewall rules (allow HTTP traffic)
+sudo ufw allow 'Nginx HTTP'
+
+# Create a dedicated Nginx configuration file for your site
+sudo tee /etc/nginx/sites-available/redirect <<EOF
+server {
     listen 80;
     listen [::]:80;
 
+    server_name itzenca.tech;
+
     root /var/www/html;
+    index index.html;
 
-    # Add index.php to the list if you are using PHP
-    index index.html index.htm index.nginx-debian.html;
-
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+    
+    # Redirect specific path to an external URL
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
-}" | sudo tee /etc/nginx/sites-available/redirect
 
-# Enable new site configuration
+    # Additional server blocks, SSL configuration, and other settings can be added here.
+}
+EOF
+
+# Create a symbolic link to enable the site
 sudo ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
-
 
 # Test Nginx configuration and reload
 sudo nginx -t
-sudo service nginx reload
+sudo systemctl reload nginx
