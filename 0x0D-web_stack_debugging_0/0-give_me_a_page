@@ -1,5 +1,5 @@
 #!/use/bin/env bash
 #Run Apache on holbertonschool
 
-echo "ServerName localhost" >> /etc/apache2.conf
-service apache2 start
+echo "ServerName localhost" >> /etc/apache2/apache2.conf
+sudo /etc/init.d/apache2 start
