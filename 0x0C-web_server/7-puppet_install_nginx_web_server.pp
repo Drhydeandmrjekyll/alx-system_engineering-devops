@@ -1,57 +1,40 @@
-# 7-puppet_install_nginx_web_server.pp
+#!/usr/bin/env bash
+# Configure server using puppet
 
-# Define a class for Nginx installation and configuration
+# Defines Puppet class called nginx_server that 
+# Encapsulates configuration for Nginx server.
 class nginx_server {
-  # Install Nginx package
   package { 'nginx':
-    ensure => 'installed',
+    ensure => installed,
   }
 
-  # Ensure Nginx service is running and enabled
+  # Manages Nginx service.
   service { 'nginx':
-    ensure => 'running',
+    ensure => running,
     enable => true,
+    require => Package['nginx'],
   }
-  
-  # Configure Nginx to listen on port 80
+ # Manages Nginx configuration file located /etc/nginx/sites-available/default.
   file { '/etc/nginx/sites-available/default':
-    ensure  => 'file',
-    content => template('nginx/default.conf.erb'),
-    require => Package['nginx'],
-    notify  => Service['nginx'],
-  }
+    ensure  => present,
+    content => "
+      server {
+        listen      80 default_server;
+        listen      [::]:80 default_server;
+        root        /var/www/html;
+        index       index.html index.htm;
 
-  # Define custom template for Nginx configuration
-  file { '/etc/nginx/sites-available/default.conf.erb':
-    ensure  => 'file',
-    source  => 'puppet:///modules/nginx/default.conf.erb',
-    require => Package['nginx'],
-    notify  => Service['nginx'],
-  }
+        location / {
+          return 200 'Hello World!';
+        }
 
-  # Ensure Nginx responds with "Hello World!" at root path
-  file { '/var/www/html/index.html':
-    ensure  => 'file',
-    content => 'Hello World!',
-    require => Package['nginx'],
-    notify  => Service['nginx'],
+        location /redirect_me {
+          return 301 http://cuberule.com/;
+        }
+      }
+    ",
+    notify => Service['nginx'],
   }
 }
-
-# Include Nginx class
+# Includes nginx_server class, ensuring it gets applied.
 include nginx_server
-
-# Define redirect resource for /redirect_me
-nginx::resource::location { 'redirect_me':
-  location    => '~ ^/redirect_me',
-  ensure      => 'present',
-  vhost       => 'default',
-  proxy       => 'http://example.com',
-  ssl         => false,
-  ssl_cert    => '',
-  ssl_key     => '',
-  ssl_port    => '',
-  ssl_verify  => '',
-  ssl_version => '',
-  ssl_ciphers => '',
-}

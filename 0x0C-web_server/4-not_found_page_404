@@ -1,16 +1,62 @@
-server {
-    listen 80;
-    server_name itzenca.tech www.itzenca.tech;
+#!/usr/bin/env bash
+# configures Nginx server so /redirect_me redirects to another page.
+# Redirection configured as a "301 Moved Permanently"
+# Includes custom 404 page containing "Ceci n'est pas une page".
 
-    location / {
-        root /usr/share/nginx/html;
-        index index.html;
+#  updates package lists for available software packages.
+apt-get update
+# installs Nginx web server.
+apt-get install -y nginx
+
+# Creates /etc/nginx/html directory, which will serve as document root directory for Nginx.
+mkdir /etc/nginx/html
+#  creates empty index.html file inside /etc/nginx/html directory.
+touch /etc/nginx/html/index.html
+#  sets content of index.html file to "Hello World!" using echo command.
+echo "Hello World!" > /etc/nginx/html/index.html
+# Sets Nginx listen on port 80 and serve files from /etc/nginx/html directory.
+printf %s "server {
+     listen      80 default_server;
+     listen      [::]:80 default_server;
+     root        /etc/nginx/html;
+     index       index.html index.htm;
+}
+" > /etc/nginx/sites-available/default
+
+#  creates empty file named 404.html inside /etc/nginx/html directory.
+touch /etc/nginx/html/404.html
+
+# Paste 404 response in 404.html file
+echo "Ceci n'est pas une page" | sudo tee /etc/nginx/html/404.html
+
+# Display script completion message
+echo "Nginx installation and configuration completed."
+
+# Create configuration file for redirection
+echo "server {
+    listen      80;
+    listen      [::]:80;
+    root        /etc/nginx/html;
+    index       index.html index.htm;
+
+    # Add index.php to the list if you are using PHP
+    index index.html index.htm index.nginx-debian.html;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
 
     error_page 404 /404.html;
-    location = /404.html {
-        internal;
-        root /usr/share/nginx/html;
-        rewrite ^.*$ /404.html break;
+    location /404 {
+      root /etc/nginx/html;
+      internal;
     }
-}
+
+}" | sudo tee /etc/nginx/sites-available/default
+
+# Enable new site configuration
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Test nginx configuration and reload
+sudo nginx -t
+sudo service nginx reload
