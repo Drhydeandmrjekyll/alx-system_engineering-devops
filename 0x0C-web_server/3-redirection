@@ -2,21 +2,21 @@
 # Production-ready Nginx setup script with backup function
 
 # Function to create a backup of a file
-backup_file() {
-    local file="$1"
-    local backup_suffix=".backup-$(date +%Y%m%d%H%M%S)"
+#backup_file() {
+#    local file="$1"
+#    local backup_suffix=".backup-$(date +%Y%m%d%H%M%S)"
 
-    if [ -e "$file" ]; then
-        sudo cp "$file" "$file$backup_suffix"
-        echo "Backup created for $file as $file$backup_suffix"
-    else
-        echo "File $file not found, skipping backup"
-    fi
-}
+#    if [ -e "$file" ]; then
+#        sudo cp "$file" "$file$backup_suffix"
+#        echo "Backup created for $file as $file$backup_suffix"
+#    else
+#        echo "File $file not found, skipping backup"
+#    fi
+#}
 
 # Check for and create backups of existing Nginx configuration files
-backup_file "/etc/nginx/nginx.conf"
-backup_file "/etc/nginx/sites-available/default"
+#backup_file "/etc/nginx/nginx.conf"
+#backup_file "/etc/nginx/sites-available/default"
 
 # Update package lists for available software packages.
 sudo apt-get update
