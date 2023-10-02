@@ -5,13 +5,18 @@
 
 sudo apt-get install -y haproxy
 
-echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+echo "ENABLED=1" >> /etc/default/haproxy
+mv /etc/haproxy/haproxy.cfg{,.original}
+touch /etc/haproxy/haproxy.cfg
 
-cat <<EOT | sudo tee -a /etc/haproxy/haproxy.cfg
+printf %s "global
+    user haproxy
+    group haproxy
+    maxconn 2000
 frontend itzenca.tech
     timeout client  30000
     bind 0:80
-    default_backend Randommall.tech_backend
+    default_backend itzenca.tech_backend
 
 backend itzenca.tech_backend
     timeout connect  3000
@@ -19,6 +24,7 @@ backend itzenca.tech_backend
     balance roundrobin
     server 255935-web-01 18.233.62.201:80 check
     server 255935-web-02 100.26.164.127:80 check
-EOT
+
+" >> /etc/haproxy/haproxy.cfg 
 
 sudo service haproxy restart
