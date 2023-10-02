@@ -16,6 +16,22 @@ echo "Hello World!" > /var/www/html/index.html
 touch /var/www/html/404.html
 echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-sed -i '/server {/a \
-    listen 80 default_server;\n    listen [::]:80 default_server;\n    add_header X-Served-By $HOSTNAME;\n    root   /var/www/html;\n    index  index.html index.htm;\n\n    location /redirect_me {\n        return 301 https://YouTube.com/;\n    }\n\n    error_page 404 /404.html;\n    location /404 {\n        root /var/www/html;\n        internal;\n    }\n' /etc/nginx/sites-available/default
+printf %s "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    add_header X-Served-By "255935-web-01";
+    root   /var/www/html;
+    index  index.html index.htm;
+
+    location /redirect_me {
+        return 301 https//YouTube.com/;
+    }
+
+    error_page 404 /404.html;
+    location /404 {
+      root /var/www/html;
+      internal;
+    }
+}" > /etc/nginx/sites-available/default
+
 service nginx restart
