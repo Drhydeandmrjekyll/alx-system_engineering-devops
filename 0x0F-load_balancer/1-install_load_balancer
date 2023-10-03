@@ -3,7 +3,7 @@
 # - Enables management via the init script.
 # - Distributes requests using a round-robin algorithm.
 
-sudo  apt-get -y update
+sudo apt-get -y update
 sudo apt-get install -y haproxy
 
 echo "ENABLED=1" >> /etc/default/haproxy
@@ -14,18 +14,21 @@ printf %s "global
     user haproxy
     group haproxy
     maxconn 2000
-frontend itzenca.tech
-    timeout client  30000
+defaults
+    mode http
+    timeout connect 5s
+    timeout client 50s
+    timeout server 50s
+frontend nginx_webservers
     bind 0:80
-    default_backend itzenca.tech_backend
+    default_backend nginx_webservers_backend
 
-backend itzenca.tech_backend
-    timeout connect  3000
-    timeout server  30000
+backend nginx_webservers_backend
     balance roundrobin
     server 255935-web-01 18.233.62.201:80 check
     server 255935-web-02 100.26.164.127:80 check
+    http-response set-header X-Served-By 03-web-01
 
-" >> /etc/haproxy/haproxy.cfg 
+" >> /etc/haproxy/haproxy.cfg
 
 sudo service haproxy restart
