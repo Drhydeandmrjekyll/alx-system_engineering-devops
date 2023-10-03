@@ -27,7 +27,7 @@ backend nginx_webservers_backend
     balance roundrobin
     server 255935-web-01 18.233.62.201:80 check
     server 255935-web-02 100.26.164.127:80 check
-    http-response set-header X-Served-By 03-web-01
+    http-response set-header X-Served-By "255935-web-01"
 
 " >> /etc/haproxy/haproxy.cfg
 
