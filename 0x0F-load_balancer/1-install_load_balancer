@@ -3,6 +3,7 @@
 # - Enables management via the init script.
 # - Distributes requests using a round-robin algorithm.
 
+sudo  apt-get -y update
 sudo apt-get install -y haproxy
 
 echo "ENABLED=1" >> /etc/default/haproxy
