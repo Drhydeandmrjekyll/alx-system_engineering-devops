@@ -9,7 +9,7 @@
 #+    The value of the HTTP header is the hostname of the running server.
 
 package { 'nginx':
-  ensure => installed,
+  ensure => 'installed',
 }
 
 file { '/var/www/html':
@@ -32,7 +32,7 @@ file { '/etc/nginx/sites-available/default':
     server {
       listen 80 default_server;
       listen [::]:80 default_server;
-      add_header X-Served-By $hostname;
+      add_header X-Served-By '255935-lb-01';
       root /var/www/html;
       index index.html index.htm;
 
