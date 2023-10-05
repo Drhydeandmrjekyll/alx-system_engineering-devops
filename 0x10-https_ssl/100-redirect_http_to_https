@@ -32,25 +32,14 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-frontend itzenca.tech
-    timeout client  30000
-    bind 0:80
-    default_backend itzenca.tech_backend
+# Frontend configuration
+frontend www-frontend
+    bind *:443 ssl crt /etc/letsencrypt/live/www.itzenca.tech/www.itzenca.tech.pem
+    reqadd X-Forwarded-Proto:\ https
+    default_backend www-backend
 
-backend itzenca.tech_backend
-    timeout connect  3000
-    timeout server  30000
-    balance roundrobin
-    server 255935-web-01 18.233.62.201:80 check
-    server 255935-web-02 100.26.164.127:80 check
-frontend nginx_webservers
-    timeout client  30000
-    bind 0:80 ssl crt /etc/letsencrypt/live/www.itzenca.tech/www.itzenca.tech.pem
-    default_backend nginx_webservers_backend
-
-backend nginx_webservers_backend
-    timeout connect  3000
-    timeout server  30000
+# Backend configuration
+backend www-backend
     balance roundrobin
     server 255935-web-01 18.233.62.201:80 check
     server 255935-web-02 100.26.164.127:80 check
