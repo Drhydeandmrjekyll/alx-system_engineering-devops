@@ -11,7 +11,7 @@ fi
 # Check if Nginx is already listening on port 80
 if ! netstat -tuln | grep -q ":80 "; then
     # If not, configure Nginx to listen on port 80
-    sed -i 's/80 default_server;/80;/g' /etc/nginx/sites-available/default
+    sed -i 's/80 default_server;/80;/g' /etc/nginx/sites-enabled/default
     service nginx restart
     echo "Nginx has been configured to listen on port 80."
 else
