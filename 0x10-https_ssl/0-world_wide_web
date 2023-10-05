@@ -1,34 +1,24 @@
 #!/usr/bin/env bash
-#Script displays information about subdomains of a given domain.
-# Function to query DNS and display information
-query_dns() {
-    subdomain="$1"
-    domain="$2"
-    result=$(dig +short "$subdomain.$domain")
-
-    if [ -z "$result" ]; then
-        echo "The subdomain $subdomain does not exist for domain $domain."
-    else
-        record_type=$(dig +short -t "$subdomain" "$domain")
-        echo "The subdomain $subdomain is a $record_type record and points to $result"
-    fi
+#Dispaly information about subdomains.
+domain_information () {
+    #Perform DNS lookup for the subdomain under specified domain
+    line=$(dig "$2" "$1" | grep -Al 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+    #Extract relevant information and print
+    echo "$2 $line" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-# Check for correct number of arguments
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-    echo "Usage: $0 <domain> [subdomain]"
-    exit 1
-fi
-
-# Set default subdomains to check
-subdomains=("www" "lb-01" "web-01" "web-02")
-
-# If subdomain is provided as an argument, query only that subdomain
-if [ "$#" -eq 2 ]; then
-    query_dns "$2" "$1"
-else
-    # If only domain is provided, query the default subdomains
-    for subdomain in "${subdomains[@]}"; do
-        query_dns "$subdomain" "$1"
-    done
+#Check number of arguements passed to script
+if [ "$#" == 1 ]
+then
+    # If there is only one arguement,
+    # then call domain information function with predefined subdomain names
+    domain_information "$1" "www"
+    domain_information "$1" "web-02"
+    domain_information "$1" "web-01"
+    domain_information "$1" "lb-01"
+elif [ "$#" == 2 ]
+then
+    # If there two arguments, call domain_information \
+    # function with provided subdomain name
+    domain_information "$1" "$2"
 fi
