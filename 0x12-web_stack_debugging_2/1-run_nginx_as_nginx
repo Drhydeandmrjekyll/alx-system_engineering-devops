@@ -11,10 +11,10 @@ fi
 sudo service nginx stop
 
 # Modify Nginx configuration file to run as nginx user
-sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
+sed -i '/user www-data/s/www-data/nginx/' /etc/nginx/nginx.conf
 
 # Modify default site configuration to listen on port 8080
-sed -i 's/listen 80;/listen 8080;/' /etc/nginx/sites-available/default
+sed -i '/listen 80/s/80/8080/' /etc/nginx/sites-available/default
 
 # Restart Nginx
 sudo service nginx start
