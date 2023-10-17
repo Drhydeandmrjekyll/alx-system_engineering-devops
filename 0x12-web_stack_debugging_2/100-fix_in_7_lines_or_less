@@ -4,4 +4,4 @@
 # Replace 'user' directive in nginx.conf
 sed -i '/user www-data/s/www-data/nginx/' /etc/nginx/nginx.conf
 sed -i '/listen 80/s/80/8080/' /etc/nginx/sites-available/default
-sudo service nginx restart
+service nginx restart
