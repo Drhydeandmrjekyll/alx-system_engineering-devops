@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Script configures Nginx to run as nginx user and listen on port 8080.
+
+# Check Nginx is installed
+if ! [ -x "$(command -v nginx)" ]; then
+  echo "Nginx is not installed. Please install Nginx first."
+  exit 1
+fi
+
+# Stop Nginx service if it's running
+sudo service nginx stop
+
+# Modify Nginx configuration file to run as nginx user
+sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
+
+# Modify default site configuration to listen on port 8080
+sed -i 's/listen 80;/listen 8080;/' /etc/nginx/sites-available/default
+
+# Restart Nginx
+sudo service nginx start
+
+# Verify changes
+ps auxff | grep ngin[x]
+nc -z 0 8080
