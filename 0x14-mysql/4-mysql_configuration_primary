@@ -1,0 +1,8 @@
+[mysqld]
+user          = mysql
+pid-file      = /var/run/mysqld/mysqld.pid
+socket        = /var/run/mysqld/mysqld.sock
+log-error     = /var/log/mysql/error.log
+datadir       = /var/lib/mysql
+log_bin = /var/log/mysql/mysql-bin.log
+server-id = 1
