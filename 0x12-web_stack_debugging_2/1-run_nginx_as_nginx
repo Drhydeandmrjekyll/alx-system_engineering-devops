@@ -20,5 +20,5 @@ sed -i 's/listen 80;/listen 8080;/' /etc/nginx/sites-available/default
 sudo service nginx start
 
 # Verify changes
-ps auxff | grep ngin[x]
+pgrep -a nginx
 nc -z 0 8080
