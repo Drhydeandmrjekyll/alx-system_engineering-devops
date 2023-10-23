@@ -1,39 +1,34 @@
 #!/usr/bin/python3
 """
-Script retrieves and displays information about an employee's
-TODO list progress from REST API.
+Returns to-do list information for a given employee ID.
+
+This script takes employee ID as a command-line argument and fetches
+corresponding user information and to-do list from JSONPlaceholder API.
+It then prints tasks completed by employee.
 """
 
-import sys
 import requests
+import sys
+
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit("Usage: ./0-gather_data_from_an_API.py employee_id")
+    # Base URL for the JSONPlaceholder API
+    url = "https://jsonplaceholder.typicode.com/"
 
+    # Get employee information using provided employee ID
     employee_id = sys.argv[1]
+    user = requests.get(url + "users/{}".format(employee_id)).json()
 
-    # Make request to API to get employee's information
-    user_info_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    base_url = 'https://jsonplaceholder.typicode.com/todos'
-    query_param = f'?userId={employee_id}'
-    todo_url = base_url + query_param
-    try:
-        user_info_response = requests.get(user_info_url)
-        todo_response = requests.get(todo_url)
+    # Get to-do list for employee using provided employee ID
+    params = {"userId": employee_id}
+    todos = requests.get(url + "todos", params).json()
 
-        user_info = user_info_response.json()
-        todos = todo_response.json()
+    # Filter completed tasks and count them
+    completed = [t.get("title") for t in todos if t.get("completed") is True]
 
-        # Calculate number of completed and total tasks
-        total_tasks = len(todos)
-        completed_tasks = sum(1 for task in todos if task['completed'])
+    # Print employee's name and number of completed tasks
+    print("Employee {} is done with tasks({}/{}):".format(
+        user.get("name"), len(completed), len(todos)))
 
-        # Display employee's TODO list progress
-        print(f"Employee {user_info['name']} is done with tasks"
-              f" ({completed_tasks}/{total_tasks}):")
-        for task in todos:
-            if task['completed']:
-                print(f"\t {task['title']}")
-    except requests.exceptions.RequestException as e:
-        sys.exit(f"An error occurred: {e}")
+    # Print complete tasks one by one with indentation
+    [print("\t {}".format(complete)) for complete in completed]
