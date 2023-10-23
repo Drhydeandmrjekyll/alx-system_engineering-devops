@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 Script retrieves and displays information about an employee's
-TODO list progress from REST API.
+TODO list progress from a REST API.
 """
 
 import sys
@@ -13,14 +13,12 @@ if __name__ == "__main__":
 
     employee_id = sys.argv[1]
 
-    # Make request to API to get employee's information
-    user_info_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    base_url = 'https://jsonplaceholder.typicode.com/todos'
-    query_param = f'?userId={employee_id}'
-    todo_url = base_url + query_param
     try:
+        base_url = 'https://jsonplaceholder.typicode.com/users/'
+        user_info_url = f'{base_url}{employee_id}'
         user_info_response = requests.get(user_info_url)
-        todo_response = requests.get(todo_url)
+        todo_response = requests.get(f'https://jsonplaceholder.typicode.com'
+                                     f'/todos?userId={employee_id}')
 
         user_info = user_info_response.json()
         todos = todo_response.json()
@@ -29,11 +27,11 @@ if __name__ == "__main__":
         total_tasks = len(todos)
         completed_tasks = sum(1 for task in todos if task['completed'])
 
-        # Display employee's TODO list progress in the required format
+        # Display employee's TODO list progress
         print(f"Employee {user_info['username']} is done with tasks"
               f"({completed_tasks}/{total_tasks}):")
         for task in todos:
             if task['completed']:
-                print(f"\t {task['title']}")
+                print(f"\t{task['title']}")
     except requests.exceptions.RequestException as e:
         sys.exit(f"An error occurred: {e}")
