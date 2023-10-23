@@ -14,12 +14,10 @@ if __name__ == "__main__":
 
     employee_id = sys.argv[1]
 
-    # Make request to API to get employee's information
-    user_info_url = (
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    )
-    todo_url = (f'https://jsonplaceholder.typicode.com/todos?'
-                f'userId={employee_id}')
+    # Make a request to the API to get employee's information
+    user_info_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    todo_url = (f"https://jsonplaceholder.typicode.com/todos?"
+                f"userId={employee_id}")
 
     try:
         user_info_response = requests.get(user_info_url)
@@ -28,21 +26,25 @@ if __name__ == "__main__":
         user_info = user_info_response.json()
         todos = todo_response.json()
 
-        # Create CSV file for user
-        csv_filename = f'{employee_id}.csv'
+        # Create a CSV file for the user
+        csv_filename = f"{employee_id}.csv"
 
-        with open(csv_filename, 'w', newline='') as csvfile:
+        with open(csv_filename, "w", newline="") as csvfile:
             csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow(["USER_ID",
-                                "USERNAME",
-                                "TASK_COMPLETED_STATUS",
-                                "TASK_TITLE"])
+            csvwriter.writerow([
+                "USER_ID",
+                "USERNAME",
+                "TASK_COMPLETED_STATUS",
+                "TASK_TITLE"
+            ])
 
             for task in todos:
-                csvwriter.writerow([user_info['id'],
-                                    user_info['username'],
-                                    task['completed'],
-                                    task['title']])
+                csvwriter.writerow([
+                    user_info["id"],
+                    user_info["username"],
+                    task["completed"],
+                    task["title"]
+                ])
 
         print(f"Data exported to {csv_filename}")
     except requests.exceptions.RequestException as e:
