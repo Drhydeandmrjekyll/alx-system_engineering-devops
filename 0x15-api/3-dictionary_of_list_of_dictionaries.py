@@ -19,11 +19,17 @@ if __name__ == "__main__":
         username = user['username']
 
         # Fetch tasks for current user
-        tasks_response = requests.get(base_url + 'todos', params={'userId': user_id})
+        tasks_response = requests.get(
+            base_url + 'todos',
+            params={'userId': user_id}
+        )
         tasks = tasks_response.json()
 
         # Create list of tasks for current user
-        user_tasks = [{'username': username, 'task': task['title'], 'completed': task['completed']} for task in tasks]
+        user_tasks = [{'username': username,
+                       'task': task['title'],
+                       'completed': task['completed']}
+                      for task in tasks]
 
         # Add user tasks to dictionary
         tasks_by_user[user_id] = user_tasks

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-Script retrieves and displays information about an employee's TODO list progress from REST API.
+Script retrieves and displays information about an employee's
+TODO list progress from REST API.
 """
 
 import sys
@@ -14,7 +15,8 @@ if __name__ == "__main__":
 
     # Make request to API to get employee's information
     user_info_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    todo_url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
+    todo_url = ('https://jsonplaceholdertypicode.com/todos'
+                f'?userId={employee_id}')
 
     try:
         user_info_response = requests.get(user_info_url)
@@ -28,7 +30,8 @@ if __name__ == "__main__":
         completed_tasks = sum(1 for task in todos if task['completed'])
 
         # Display employee's TODO list progress
-        print(f"Employee {user_info['name']} is done with tasks({completed_tasks}/{total_tasks}):")
+        print(f"Employee {user_info['name']} is done with tasks"
+              f" ({completed_tasks}/{total_tasks}):")
         for task in todos:
             if task['completed']:
                 print(f"\t {task['title']}")

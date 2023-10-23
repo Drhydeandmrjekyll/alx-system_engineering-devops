@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-Script retrieves and exports information about an employee's TODO list progress from a REST API in CSV format.
+Script retrieves and exports information about an employee's
+TODO list progress from a REST API in CSV format.
 """
 
 import sys
@@ -15,7 +16,8 @@ if __name__ == "__main__":
 
     # Make request to API to get employee's information
     user_info_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    todo_url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
+    todo_url = (f'https://jsonplaceholder.typicode.com/todos?'
+                f'userId={employee_id}')
 
     try:
         user_info_response = requests.get(user_info_url)
@@ -29,11 +31,17 @@ if __name__ == "__main__":
 
         with open(csv_filename, 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
-            
+            csvwriter.writerow(["USER_ID",
+                                "USERNAME",
+                                "TASK_COMPLETED_STATUS",
+                                "TASK_TITLE"])
+
             for task in todos:
-                csvwriter.writerow([user_info['id'], user_info['username'], task['completed'], task['title']])
-                
+                csvwriter.writerow([user_info['id'],
+                                    user_info['username'],
+                                    task['completed'],
+                                    task['title']])
+
         print(f"Data exported to {csv_filename}")
     except requests.exceptions.RequestException as e:
         sys.exit(f"An error occurred: {e}")
