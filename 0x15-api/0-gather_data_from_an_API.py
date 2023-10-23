@@ -29,9 +29,9 @@ if __name__ == "__main__":
         total_tasks = len(todos)
         completed_tasks = sum(1 for task in todos if task['completed'])
 
-        # Display employee's TODO list progress
-        print(f"Employee {user_info['name']} is done with tasks"
-              f" ({completed_tasks}/{total_tasks}):")
+        # Display employee's TODO list progress in the required format
+        print(f"Employee {user_info['username']} is done with tasks"
+              f"({completed_tasks}/{total_tasks}):")
         for task in todos:
             if task['completed']:
                 print(f"\t {task['title']}")
