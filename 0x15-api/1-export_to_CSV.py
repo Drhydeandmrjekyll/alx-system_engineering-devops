@@ -15,7 +15,9 @@ if __name__ == "__main__":
     employee_id = sys.argv[1]
 
     # Make request to API to get employee's information
-    user_info_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
+    user_info_url = (
+        f'https://jsonplaceholder.typicode.com/users/{employee_id}'
+    )
     todo_url = (f'https://jsonplaceholder.typicode.com/todos?'
                 f'userId={employee_id}')
 
