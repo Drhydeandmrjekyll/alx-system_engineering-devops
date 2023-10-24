@@ -1,42 +1,43 @@
 #!/usr/bin/python3
 """
-Script retrieves and exports information about an employee's TODO list progress
-from a REST API in JSON format.
+Exports to-do list information for given employee ID to JSON format.
+
+This script takes employee ID as a command-line argument and exports
+corresponding user information and to-do list to JSON file.
 """
 
-import sys
-import requests
 import json
+import requests
+import sys
+
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit("Usage: ./2-export_to_JSON.py employee_id")
+    # Get employee ID from command-line argument
+    user_id = sys.argv[1]
 
-    employee_id = sys.argv[1]
+    # Base URL for JSONPlaceholder API
+    url = "https://jsonplaceholder.typicode.com/"
 
-    # Make request to API to get employee's information
-    user_info_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    todo_url = (f'https://jsonplaceholder.typicode.com/todos'
-                f'?userId={employee_id}')
+    # Fetch user information using provided employee ID
+    user = requests.get(url + "users/{}".format(user_id)).json()
+    username = user.get("username")
 
-    try:
-        user_info_response = requests.get(user_info_url)
-        todo_response = requests.get(todo_url)
+    # Fetch to-do list for employee using provided employee ID
+    params = {"userId": user_id}
+    todos = requests.get(url + "todos", params).json()
 
-        user_info = user_info_response.json()
-        todos = todo_response.json()
+    # Create dictionary containing user and to-do list information
+    data_to_export = {
+        user_id: [
+            {
+                "task": t.get("title"),
+                "completed": t.get("completed"),
+                "username": username
+            }
+            for t in todos
+        ]
+    }
 
-        # Create JSON data structure
-        json_data = {user_info['id']: [
-            {"task": task['title'], "completed": task['completed'],
-             "username": user_info['username']} for task in todos]}
-
-        # Create JSON file for user
-        json_filename = f'{employee_id}.json'
-
-        with open(json_filename, 'w') as jsonfile:
-            json.dump(json_data, jsonfile)
-
-        print(f"Data exported to {json_filename}")
-    except requests.exceptions.RequestException as e:
-        sys.exit(f"An error occurred: {e}")
+    # Write data to a JSON file with employee ID as filename
+    with open("{}.json".format(user_id), "w") as jsonfile:
+        json.dump(data_to_export, jsonfile, indent=4)

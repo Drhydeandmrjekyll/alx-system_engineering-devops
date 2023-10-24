@@ -1,51 +1,34 @@
 #!/usr/bin/python3
-"""
-Script retrieves and exports information about an employee's
-TODO list progress from a REST API in CSV format.
-"""
+"""Exports to-do list information for given employee ID to CSV format."""
 
-import sys
-import requests
 import csv
+import requests
+import sys
+
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit("Usage: ./1-export_to_CSV.py employee_id")
+    # Get user ID from command-line arguments provided to script
+    user_id = sys.argv[1]
 
-    employee_id = sys.argv[1]
+    # Define base URL for JSON API
+    url = "https://jsonplaceholder.typicode.com/"
 
-    # Make a request to the API to get employee's information
-    user_info_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    todo_url = (f"https://jsonplaceholder.typicode.com/todos?"
-                f"userId={employee_id}")
+    # Fetch user information from API and
+    #   convert response to JSON object
+    user = requests.get(url + "users/{}".format(user_id)).json()
 
-    try:
-        user_info_response = requests.get(user_info_url)
-        todo_response = requests.get(todo_url)
+    # Extract username from user data
+    username = user.get("username")
 
-        user_info = user_info_response.json()
-        todos = todo_response.json()
+    # Fetch to-do list items associated with
+    #   given user ID and convert response to JSON object
+    todos = requests.get(url + "todos", params={"userId": user_id}).json()
 
-        # Create a CSV file for the user
-        csv_filename = f"{employee_id}.csv"
-
-        with open(csv_filename, "w", newline="") as csvfile:
-            csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow([
-                "USER_ID",
-                "USERNAME",
-                "TASK_COMPLETED_STATUS",
-                "TASK_TITLE"
-            ])
-
-            for task in todos:
-                csvwriter.writerow([
-                    user_info["id"],
-                    user_info["username"],
-                    task["completed"],
-                    task["title"]
-                ])
-
-        print(f"Data exported to {csv_filename}")
-    except requests.exceptions.RequestException as e:
-        sys.exit(f"An error occurred: {e}")
+    # Use list comprehension to iterate over to-do list items
+    # Write each item's details (user ID, username, completion status,
+    #   and title) as row in CSV file
+    with open("{}.csv".format(user_id), "w", newline="") as csvfile:
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+        [writer.writerow(
+            [user_id, username, t.get("completed"), t.get("title")]
+         ) for t in todos]
