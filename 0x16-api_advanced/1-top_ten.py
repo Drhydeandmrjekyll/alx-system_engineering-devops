@@ -28,7 +28,7 @@ def top_ten(subreddit):
         else:
             print("No posts found in the subreddit.")
     else:
-        print("Not a valid subreddit or an issue with the Reddit API.")
+        print(None)
 
 if __name__ == '__main__':
     import sys
