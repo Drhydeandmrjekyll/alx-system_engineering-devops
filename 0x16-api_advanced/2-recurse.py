@@ -5,9 +5,11 @@
 
 import requests
 
+
 def recurse(subreddit, hot_list=[], after=None):
     """
-    Recursive function to query the Reddit API and return a list of titles of all hot articles.
+    Recursive function to query the Reddit API and return
+    a list of titles of all hot articles.
     Args:
         subreddit (str): The name of the subreddit to query.
         hot_list (list): A list to store the titles of hot articles.
@@ -17,7 +19,7 @@ def recurse(subreddit, hot_list=[], after=None):
         list: A list containing the titles of all hot articles.
     """
     url = 'https://www.reddit.com/r/{subreddit}/hot.json?limit=100'
-    headers = {'User-Agent': 'MyBot/1.0'}  # Set a custom User-Agent to avoid Too Many Requests error.
+    headers = {'User-Agent': 'MyBot/1.0'}
     params = {'after': after} if after else {}
 
     response = requests.get(url, headers=headers, params=params)
@@ -36,6 +38,7 @@ def recurse(subreddit, hot_list=[], after=None):
                 return hot_list
     else:
         return None
+
 
 if __name__ == '__main__':
     import sys

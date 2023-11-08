@@ -5,9 +5,11 @@
 
 import requests
 
+
 def top_ten(subreddit):
     """
-    Function to query Reddit API and print titles of first 10 hot posts for given subreddit.
+    Function to query Reddit API and print titles of first 10
+    hot posts for given subreddit.
     Args:
         subreddit (str): Name of subreddit to query.
 
@@ -15,7 +17,7 @@ def top_ten(subreddit):
         None
     """
     url = 'https://www.reddit.com/r/{subreddit}/hot.json?limit=10'
-    headers = {'User-Agent': 'MyBot/1.0'}  # Set custom User-Agent to avoid Too Many Requests error.
+    headers = {'User-Agent': 'MyBot/1.0'}
 
     response = requests.get(url, headers=headers)
 
@@ -29,6 +31,7 @@ def top_ten(subreddit):
             print("No posts found in the subreddit.")
     else:
         print(None)
+
 
 if __name__ == '__main__':
     import sys
